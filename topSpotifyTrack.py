@@ -15,16 +15,16 @@ soup = 	BeautifulSoup(page.text, "html.parser")
 
 countries_list = soup.find("div", {"data-type": "country"})
 country_names = [name.text for name in countries_list.select("li")]
-country_abrvs = [abrv.get("data-value") for abrv in countries_list.select("li")][0:5]
+country_abrvs = [abrv.get("data-value") for abrv in countries_list.select("li")]
 date = [name.text for name in soup.find("div", {"data-type": "date"}).select("li")][0].replace('/', '-')
 
 
 # open the file for reading
-wbRD = xlrd.open_workbook("{}/Documents/Practice/SpotifyCharts.xlsx".format(home))
+wbRD = xlrd.open_workbook("{}/Documents/Practice/SpotifyTrackTracker/SpotifyCharts.xlsx".format(home))
 sheets = wbRD.sheets()
 
 ## Extracting Top Songs from each country
-workbook = xlsxwriter.Workbook("{}/Documents/Practice/SpotifyCharts.xlsx".format(home))
+workbook = xlsxwriter.Workbook("{}/Documents/Practice/SpotifyTrackTracker/SpotifyCharts.xlsx".format(home))
 
 # run through the sheets and store sheets in workbook
 # this still doesn't write to the file yet
@@ -35,7 +35,7 @@ for sheet in sheets: # write data from old file
             newSheet.write(row, col, sheet.cell(row, col).value)
 
 ## Write New Data
-worksheet = workbook.add_worksheet("08-11-2019")
+worksheet = workbook.add_worksheet(date)
 bold = workbook.add_format({'bold': True})
 row, column = 0, 0
 worksheet.write(row, column, "Rank\\Country", bold)
@@ -59,7 +59,7 @@ for country in country_abrvs:
 	
 	#write songs to sheet
 	row = 0
-	worksheet.write(row, column, country)
+	worksheet.write(row, column, country_names[country_abrvs.index(country)])
 	for song in songs:
 		row += 1
 		worksheet.write(row, column, song)
